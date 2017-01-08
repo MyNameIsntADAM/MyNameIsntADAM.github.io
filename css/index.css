@@ -1,0 +1,115 @@
+body {
+	background-image: url("../images/background.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	color: white;
+}
+
+#projects {
+	height: 1280px;
+}
+
+.header {
+	position: relative;
+	top: 40px;
+	height: 550px;
+}
+
+.hook {
+	font-family: 'Molengo', sans-serif;
+	color: white;
+	padding: 10px;
+	position: relative;
+}
+
+.subtitle {
+	padding: 10px;
+	font-family: 'Molengo', sans-serif;
+	color: white;
+}
+
+.random-button {
+	display: block;
+	position: relative;
+	color: white;
+	border: 1px solid white;
+	padding: 3px 15px;
+	font-size: 2em;
+	text-align: center;
+	border: 1px solid white;
+	width: 300px;
+	margin: auto;
+	top: 20px;
+}
+.random-button:hover {
+	color: black;
+	background-color: white;
+	border-color: black;
+}
+.random-button:focus {
+	color: black;
+}
+
+.me {
+	display: block;
+	max-width: 175px;
+	margin: 0 auto 25px auto;
+	border-radius: 100%;
+	border: 3px solid white;
+}
+
+.project-anchor {
+	text-align: center;
+	width: 50%;
+	margin: 0 auto 50px auto;
+	color: white;
+	font-family: 'Molengo', sans-serif;
+	font-size: 3em;
+	padding-bottom: 15px;
+	border-bottom: 1px solid white;
+}
+.project {
+	color: white;
+	margin: 15px auto;
+	border: 1px solid black;
+	padding-top: 10px;
+	background-color: rgba(0,0,0,0.6);
+	transition: all .6s ease-in-out;
+	overflow: hidden;
+}
+.project:hover {
+	overflow: hidden;
+	-webkit-transform: scale(1.025);
+	-moz-transform: scale(1.025);
+	transform: scale(1.025);
+}
+.project-title {
+	font-family: 'Molengo', sans-serif;
+	font-size: 2em;
+	width: 100%;
+	margin: 15px auto 22px auto;
+	text-align: center;
+}
+.project-title a, .project-title a:hover, .project-title a:visited, .project-title a:focus {
+	color: white;
+	font-family: 'Molengo', sans-serif;
+}
+.project-image {
+	display: block;
+	width: 90%;
+	margin: auto;
+	border: 1px solid black;
+}
+.project-description {
+	width: 90%;
+	margin: 20px auto;
+	padding-bottom: 10px;
+	font-size: 1.3em;
+}
+.signoff {
+	font-size: 1.2em;
+	width: 90%;
+	display: block;
+	margin: auto;
+	padding-bottom: 15px;
+}

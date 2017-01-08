@@ -1,0 +1,93 @@
+body {
+	position: relative;
+	top: 100px;
+}
+a, p, h1, h2, h3 {
+	font-family: 'Lekton', sans-serif;
+}
+#navbar {
+	height: 5.2em;
+	width: 100%;
+	position: fixed;
+	top: 0;
+	line-height: 5.2em;
+	left: 0;
+	border-bottom: 1px solid white;
+	z-index: 9999999;
+	background-color: none;
+	transition: all 0.3s ease-in-out;
+}
+#navbar.darken {
+	line-height: 4.2em;
+	height: 4.2em;
+	background-color: rgba(0,0,0,0.85);
+	border: none;
+}
+
+.menu {
+	height: 100%;
+	list-style-type: none;
+	float: right;
+	padding: 0 100px 0 0;
+	margin: 0;
+}
+.item {
+	height: 100%;
+	display: inline-block;
+	text-align: center;
+	text-decoration: none; 
+	vertical-align: center;
+}
+.item a {
+	width: 100%;
+	height: 100%;
+	margin: 0 20px 0 20px;
+	line-height: 58px;
+	display: block;
+	color: white;
+	font-size: 1.3em;
+	letter-spacing: 1px;
+	text-align: center;
+	vertical-align: center;
+	text-decoration: none;
+}
+.item a:hover {
+	text-decoration: underline;
+	color: white;
+}
+.item a:visited {
+	color: white;
+}
+
+.logo {
+	float: left;
+	text-decoration: none;
+	color: white;
+	line-height: 2em;
+	font-size: 2em;
+	margin-left: 3em;
+	padding: 3px 10px;
+}
+.logo:hover {
+	color: white;
+}
+
+.center {
+	display: block;
+	margin: auto;
+	width: 50%;
+	text-align: center;
+}
+.image-link {
+	width: 2px;
+}
+.zoom {
+	transition: all .5s ease-in-out;
+	overflow: hidden;
+}
+.zoom:hover {
+	overflow: hidden;
+	-webkit-transform: scale(1.025);
+	-moz-transform: scale(1.025);
+	transform: scale(1.025);
+}
