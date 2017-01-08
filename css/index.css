@@ -4,26 +4,48 @@ body {
 	background-size: cover;
 	color: white;
 }
-
-#projects {
-	height: 1280px;
-}
-
 .header {
 	position: relative;
-	top: 40px;
+	margin-top: 140px;
 	height: 550px;
 }
-
-.hook {
-	font-family: 'Molengo', sans-serif;
-	color: white;
-	padding: 10px;
-	position: relative;
+@media(min-width: 768px) {
+	.hook {
+		width: 50%;
+		text-align: center;
+		margin: auto;
+		font-family: 'Molengo', sans-serif;
+		color: white;
+		padding: 10px;
+		position: relative;
+	}
+	.subtitle {
+		margin: auto;
+		width: 50%;
+		text-align: center;
+	}
+}
+@media(max-width: 768px) {
+	.hook {
+		width: 90%;
+		text-align: center;
+		margin: 0 auto;
+		font-family: 'Molengo', sans-serif;
+		color: white;
+		font-size: 2em;
+		padding: 10px;
+		position: relative;
+	}
+	.header {
+		top: 10px;
+	}
 }
 
 .subtitle {
+	width: 90%;
 	padding: 10px;
+	font-size: 2em;
+	margin: 0 auto;
 	font-family: 'Molengo', sans-serif;
 	color: white;
 }
@@ -82,6 +104,7 @@ body {
 	-webkit-transform: scale(1.025);
 	-moz-transform: scale(1.025);
 	transform: scale(1.025);
+	background-color: rgba(0,0,0,0.75);
 }
 .project-title {
 	font-family: 'Molengo', sans-serif;
