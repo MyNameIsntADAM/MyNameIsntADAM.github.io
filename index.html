@@ -16,7 +16,7 @@
 
 <body id="page-top">
 	<div id="navbar">
-		<a class="logo" href="#page-top">Adam Hazelton</a>
+		<a class="logo" href="index.html">Adam Hazelton</a>
 		<ul class="menu">
 			<li class="item"><a data-scroll href="#page-top">Home</a></li>
 			<li class="item"><a data-scroll href="#projects">Projects</a></li>
@@ -35,7 +35,7 @@
 			below to look at a random project of mine!</h2>
 		</div>
 		<div>
-			<a href="#" class="random-button">Random Project</a>
+			<a id="random" href="#" class="random-button">Random Project</a>
 		</div>
 	</div>
 	<div id="projects" class="container">
@@ -44,10 +44,9 @@
 			<div class="col-md-4">
 				<div class="project">
 					<h3 class="project-title"><a href="dijkstra.html">Implementing Dijkstra's Algorithm in Java</a></h3>
-					<a href="dijkstra.html"><img class="project-image" src="images/graph.gif"></img></a>
+					<a href="project1.html"><img class="project-image" src="images/graph.gif"></img></a>
 					<p class="project-description">Dijkstra's Algorithm provides a way to find the shortest path
-					between two nodes in a weighted and directed graph. With OOP, we can easily interface
-					the implementation of the graph search algorithm.</p>
+					between two nodes in a weighted and directed graph. With OOP, we can construct a basic implementation of the graph search algorithm.</p>
 					<p class="signoff">By Adam Hazelton, 01/08/2017</p>
 				</div>
 			</div>
@@ -94,6 +93,7 @@
 	<script src="js/bootstrap.js"></script>
 	<script src="js/smooth-scroll.js"></script>
 	<script src="js/darken.js"></script>
+	<script src="js/random.js"></script>
 	<script>
 		smoothScroll.init();
 	</script>

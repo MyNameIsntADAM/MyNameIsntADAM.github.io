@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Adam Hazelton's Personal Website">
+    <meta name="author" content="Adam Hazelton">
+	<link href="css/project.css" rel="stylesheet" type="text/css">
+	<link href="css/style.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Lekton|Molengo" rel="stylesheet">
+	<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="page-top">
+	<!-- Navigation -->
+	<div id="navbar">
+		<a class="logo" href="index.html">Adam Hazelton</a>
+		<ul class="menu">
+			<li class="item"><a data-scroll href="index.html">Home</a></li>
+			<li class="item"><a data-scroll href="index.html#projects">Projects</a></li>
+			<li class="item"><a data-scroll href="index.html#about">About me</a></li>
+		</ul>
+	</div>
+	
+	<!-- Page content -->
+	<div class="page-content">
+		<div class="container">
+			<h1 class="title">Implementing Dijkstra's Search Algorithm in Java</h1>
+			<h2 class="credits">By Adam Hazelton, 1/10/2017</h3>
+			<div class="left col-md-12">
+				<h3 class="subtitle">The Shortest Path Problem</h3>
+				<p class="content">The shortest path in graph theory is the route taken between two nodes such that the sum of the weights of all edges traversed is minimized. AKA, the shortest path. Common applications of the shortest path problem include network traversal and road map routing. The ability to reach a destination from a given starting point in the smallest amount of time can be achieved through graph search algorithms. Dijkstra’s Algorithm, a non-heuristic search algorithm created by computer scientist Edsger W. Dijkstra in 1956, can be used to find the shortest route between a given node and all other nodes in a graph. In the following article, I will explain how I modeled the shortest path problem, and subsequently implemented Dijkstra’s Algorithm to find the shortest path between any two nodes on a given graph. I will also be explaining several basic components of graph theory in order to provide a more robust understanding of the algorithm for those without the prior background.</p>
+				<h3 class="subtitle">Graph Theory</h3>
+				<p class="content">A <i>graph</i> is a set of nodes and edges. In terms of maps, nodes can be thought of as specific locations, with edges being the roads that connect them. And like these locations, nodes will often contain information or data that, for whatever reason,
+				we desire to access, from store location to social media usernames. Edges, like roads, also have intrinsic information stored in them, including weight and direction (in the case of weighted and directed graphs). They can be modeled like roads, with distances and speed limits, each end connecting one location (node) to another. The weight of an edge connecting two nodes can be used with Dijkstra's algorithm to gauge whether
+				it is a worthy candidate to travel through.</p>
+				<p class="content">Why use weights with edges? Take for example the shortest path problem modeled with a (very well drawn) geographic map. You want to get from your house to the cake shop. As of right now, you have two paths you can follow: the one that starts with Main Street, or the one that starts with Fast Way. If the edges were unweighted, and you were simply deciding on which path to take by how many nodes (locations) you passed through, Main Street would be
+				the clear choice. However, Fast Way, despite passing through three times as many nodes, has an overall shorter path to the ice cream shop. A greedy algorithm may have found the less ideal path down Main Street first, and you may never have gotten your delicious ice cream cake. With a more thoughtful approach, we can find the shortest path and eat our cake too.</p>
+				<p class="content">In order to implement Dijkstra's Algorithm, we will need to model a basic graph. With object oriented programming, we can easily create classes for the nodes and edges that constitute a weighted, directed graph.</p>
+				<p class="content">The following classes model a basic graph of this nature.</p>
+				<h3 class="subtitle">Node</h3>
+				<pre><code>public class Node {
+	private String name;
+	private Double distance = Double.MAX_VALUE;
+	private Node previous = null;
+	
+	public Node(String name) {
+		this.name = name;
+	}
+	
+	public String toString() {
+		return name;
+	}
+	
+	public Double getDistance() {
+		return distance;
+	}
+	
+	public Node getPrevious() {
+		return previous;
+	}
+	
+	public void setPrevious(Node n) {
+		previous = n;
+	}
+	
+	public void setDistance(Double d) {
+		distance = d;
+	}
+	
+	public boolean equals(Node n) {
+		return n.toString().equals(name);
+	}
+}				
+</code></pre>
+				<p class="content">The member variable <i>distance</i> holds the distance (distance along the edges, not Euclidian distance) to the starting node (the original location). All nodes must be first initialized to infinity, or Dijkstra's algorithm may not provide the shortest path. In Java, this can be by instantiating the member <i>distance</i> to <i>Double.MAX_VALUE</i> or <i>Integer.MAX_VALUE</i> if you choose to use Integer distances.</p>
+				<h3 class="subtitle">Vertex</h3>
+<pre><code>public class Edge {
+	private String name;
+	private double length;
+	private Node start, end;
+
+	public Edge(String name, Node start, Node end, double l) {
+		this.name = name;
+		this.start = start;
+		this.end = end;
+		this.length = l;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public double getLength() {
+		return length;
+	}
+	
+	public Node getStart() {
+		return start;
+	}
+	
+	public Node getEnd() {
+		return end;
+	}
+	
+	public boolean equals(Edge e) {
+		return e.getName().equals(name);
+	}
+	
+}
+</code></pre>
+<h3 class="subtitle">Graph</h3>
+<pre><code>import java.util.List;
+
+public class Graph {
+	private List<Node> nodes;
+	private List<Edge> edges;
+	
+	public Graph(List<Node> nodes, List<Edge> edges) {
+		this.nodes = nodes;
+		this.edges = edges;
+	}
+	
+	public List<Edge> getEdges() {
+		return edges;
+	}
+	
+	public List<Node> getNodes() {
+		return nodes;
+	}
+}
+</code></pre>
+<h3 class="subtitle">Dijkstra's Algorithm</h3>
+				
+
+
+<pre><code>import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+
+public class Dijkstra {
+	
+	/*
+	 * This implementation of Dijkstra's algorithm updates all nodes in a graph with their shortest distance/path to a given node
+	 */
+	
+	private Graph graph;
+	private List<Edge> edges;
+	private Set<Node> unsearched;
+	private Set<Node> searched;
+	
+	public Dijkstra(Graph graph) {
+		this.graph = graph;
+		resetGraph();
+	}
+	
+	/*
+	 * Clears all edges;
+	 */
+	private void resetGraph() {
+		this.edges = new ArrayList<Edge>(graph.getEdges());
+	}
+	
+	/*
+	 * Finds and prints shortest path from start to end
+	 */
+	public void run(Node start, Node end) {
+		
+		unsearched = new HashSet<Node>();
+		searched = new HashSet<Node>();
+		
+		Node current = start;		//Start the search with @param start
+		start.setDistance(0.0);
+		unsearched.add(start);
+		
+		while(!unsearched.isEmpty()) {
+			//Check if current is our target destination. If so, print out the path and end the function.
+			if(current.equals(end)) {
+				printPath(end);
+				return;
+			}
+			//Set current to the node with the least distance to start
+			current = getClosest();
+			searched.add(current);
+			unsearched.remove(current);
+			updateNeighborDistances(current);
+		}
+		//We did not find the shortest path.
+		System.out.println("Shortest path between " + start + " and " + end + " was not found.");
+	}
+	
+	/*
+	 * Updates all nodes with shortest distance from start. printPath(end) must be called separately.
+	 */
+	public void run(Node start) {
+		
+		unsearched = new HashSet<Node>();
+		searched = new HashSet<Node>();
+		
+		Node current = start;		//Set the current node to start
+		start.setDistance(0.0);		//
+		unsearched.add(start);
+		
+		while(!unsearched.isEmpty()) {
+			//Set current to the node with the least distance to start
+			current = getClosest();
+			searched.add(current);
+			unsearched.remove(current);
+			updateNeighborDistances(current);
+		}
+	}
+	/*
+	 * @param destination the node whose shortest path to the start node we want to print
+	 */
+	public void printPath(Node destination) {
+		System.out.println("Total distance traveled: " + destination.getDistance());
+		Node current = destination;
+		Stack<Node> path = new Stack<Node>();
+		path.push(destination);
+		
+		//Enqueue all path nodes to a stack (so we can easily print in reverse order)
+		while(current.getPrevious() != null) {
+			current = current.getPrevious();
+			path.push(current);
+		}
+		
+		//Print out the path in the correct order
+		do {
+			System.out.println(path.pop());
+		}
+		while(!path.isEmpty());
+	}
+	
+	/*
+	 * @param curr the node whose neighbors we will update
+	 */
+	private void updateNeighborDistances(Node curr) {
+		List<Node> neighbors = getNeighbors(curr);
+		Double distance = curr.getDistance();
+		for(Node neighbor : neighbors) {
+			//Updates distances for nodes that neighbor @param curr
+				Double temp = getDistanceFrom(curr, neighbor);
+				if(distance + temp < neighbor.getDistance()) {
+					neighbor.setPrevious(curr);
+					neighbor.setDistance(distance + temp);
+					unsearched.add(neighbor);
+				}
+		}
+	}
+	
+	/*
+	 * @return the unsearched node with the shortest path to the start
+	 */
+	private Node getClosest() {
+		Node closest = null;
+		for(Node node : unsearched) {
+				if(closest == null) {
+					closest = node;
+				}
+				else {
+					if(node.getDistance() < closest.getDistance()) {
+						closest = node;
+					}
+				}
+		}
+		return closest;
+	}
+	
+	private Double getDistanceFrom(Node start, Node end) {
+		for(Edge e : edges) {
+			if(e.getStart().equals(start) && e.getEnd().equals(end)) {
+				return e.getLength();
+			}
+		}
+		return null;
+	}
+	
+	private ArrayList<Node> getNeighbors(Node n) {
+		ArrayList<Node> neighbors = new ArrayList<Node>();
+		for(Edge edge : edges) {
+			if(edge.getStart().equals(n)) {
+				neighbors.add(edge.getEnd());
+			}
+		}
+		return neighbors;
+	}
+	
+}
+</code></pre>
+<h3 class="subtitle">Testing the Algorithm</h3>
+<p class="content">Below is a simple test case for the algorithm. It should, given a valid start and end node, print out the total distance and shortest path in the correct order.
+<pre><code>import java.util.ArrayList;
+import java.util.List;
+
+public class Runner {
+	
+	//Change these to whatever you want. The indexes must be valid.
+	private static final int start = 1, end = 0;
+	
+	private List<Node> nodes;
+	private List<Edge> edges;
+	
+	public void testExecute() {
+		nodes = new ArrayList<Node>();
+		edges = new ArrayList<Edge>();
+		for(int i = 0; i < 12; i++) {
+			Node location = new Node("Node_" + i);
+			nodes.add(location);
+		}
+		addEdge("Edge_0", 0, 1, 234);
+		addEdge("Edge_1", 0, 2, 223);
+		addEdge("Edge_2", 0, 4, 173);
+		addEdge("Edge_3", 2, 6, 17);
+		addEdge("Edge_4", 2, 7, 1343);
+		addEdge("Edge_5", 3, 7, 75);
+		addEdge("Edge_6", 5, 8, 630);
+		addEdge("Edge_7", 8, 9, 884);
+		addEdge("Edge_8", 7, 9, 147);
+		addEdge("Edge_9", 4, 9, 512);
+		addEdge("Edge_10", 9, 10, 40);
+		addEdge("Edge_11", 1, 10, 50);
+		addEdge("Edge_12", 5, 11, 243);
+		addEdge("Edge_13", 2, 11, 122);
+		addEdge("Edge_13", 4, 11, 9);
+		addEdge("Edge_14", 1, 0, 22);
+		
+        Graph graph = new Graph(edges);
+        Dijkstra dijkstra = new Dijkstra(graph);
+      
+        //Calculate shortest path to given node for all nodes.
+        dijkstra.run(nodes.get(start), nodes.get(end));
+	}
+
+	/*
+	 * @param name the name of the edge
+	 * @param start the index of the edge's first node
+	 * @param end the index of the edge's connecting node
+	 * @param length the weight of the edge
+	 */
+	private Edge addEdge(String name, int start, int end, double length) {
+		Edge edge = new Edge(name, nodes.get(start), nodes.get(end), length);
+		edges.add(edge);
+		return edge;
+	}
+	
+	public static void main(String[] args) {
+		new Runner().testExecute();
+	}
+	
+}
+</code></pre>
+			</div>
+		</div>
+	</div>
+	
+	<div class="footer">
+            <div class="row">
+                <div class="col-md-5 col-xs-12">
+                    <span class="copyright">Copyright &copy Adam Hazelton 2017</span>
+                </div>
+                <div class="col-md-2 col-xs-12">
+                    <ul class="list-inline social-buttons">
+                        <li><a href="https://mobile.twitter.com/adam_hazelton/" target="_blank"><i class="fa fa-twitter"></i></a>
+                        </li>
+                        <li><a href="https://www.instagram.com/adamissuperdumb/" target="_blank"><i class="fa fa-instagram"></i></a>
+                        </li>
+                        <li><a href="https://www.linkedin.com/in/adam-hazelton-93a7a5125" target="_blank"><i class="fa fa-linkedin"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-5 col-xs-12">
+                    <span class="copyright">If you want to collaborate on any projects, let me know at <a style="color: white;" href="tel:16618084081">1-661-808-4081</a>. Please no soliciting.</span>
+                </div>
+            </div>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script src="js/smooth-scroll.js"></script>
+	<script src="js/darken.js"></script>
+	<script>
+		smoothScroll.init();
+	</script>
+</body>

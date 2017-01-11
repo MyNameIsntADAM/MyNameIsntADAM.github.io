@@ -1,8 +1,13 @@
 body {
 	position: relative;
+	background-image: url("../images/background.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	color: white;
 }
 a, p, h1, h2, h3 {
 	font-family: 'Lekton', sans-serif;
+	color: white;
 }
 #navbar {
 	height: 5.2em;
@@ -21,6 +26,9 @@ a, p, h1, h2, h3 {
 	height: 4.2em;
 	background-color: rgba(0,0,0,0.85);
 	border: none;
+}
+pre {
+	margin: 15px auto;
 }
 .logo {
 	float: left;
@@ -102,6 +110,9 @@ a, p, h1, h2, h3 {
 	font-family: 'Lekton', sans-serif;
 	text-transform: uppercase;
 	text-transform: none;
+}
+code {
+	font-size: 1.3em !important;
 }
 ul.social-buttons {
   margin: 0 auto;
