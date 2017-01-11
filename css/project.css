@@ -1,3 +1,7 @@
+body {
+	background-image: url("../images/background.jpg");
+}
+
 #navbar {
 	margin-bottom: 100px
 }
