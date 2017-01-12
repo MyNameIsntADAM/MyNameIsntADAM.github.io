@@ -29,15 +29,17 @@
 	<div class="page-content">
 		<div class="container">
 			<h1 class="title">Implementing Dijkstra's Search Algorithm in Java</h1>
-			<h2 class="credits">By Adam Hazelton, 1/10/2017</h3>
+			<h2 class="credits">By Adam Hazelton, 1/08/2017</h3>
 			<div class="left col-md-12">
 				<h3 class="subtitle">The Shortest Path Problem</h3>
 				<p class="content">The shortest path in graph theory is the route taken between two nodes such that the sum of the weights of all edges traversed is minimized. AKA, the shortest path. Common applications of the shortest path problem include network traversal and road map routing. The ability to reach a destination from a given starting point in the smallest amount of time can be achieved through graph search algorithms. Dijkstra’s Algorithm, a non-heuristic search algorithm created by computer scientist Edsger W. Dijkstra in 1956, can be used to find the shortest route between a given node and all other nodes in a graph. In the following article, I will explain how I modeled the shortest path problem, and subsequently implemented Dijkstra’s Algorithm to find the shortest path between any two nodes on a given graph. I will also be explaining several basic components of graph theory in order to provide a more robust understanding of the algorithm for those without the prior background.</p>
 				<h3 class="subtitle">Graph Theory</h3>
 				<p class="content">A <i>graph</i> is a set of nodes and edges. In terms of maps, nodes can be thought of as specific locations, with edges being the roads that connect them. And like these locations, nodes will often contain information or data that, for whatever reason,
 				we desire to access, from store location to social media usernames. Edges, like roads, also have intrinsic information stored in them, including weight and direction (in the case of weighted and directed graphs). They can be modeled like roads, with distances and speed limits, each end connecting one location (node) to another. The weight of an edge connecting two nodes can be used with Dijkstra's algorithm to gauge whether
-				it is a worthy candidate to travel through.</p>
-				<p class="content">Why use weights with edges? Take for example the shortest path problem modeled with a (very well drawn) geographic map. You want to get from your house to the cake shop. As of right now, you have two paths you can follow: the one that starts with Main Street, or the one that starts with Fast Way. If the edges were unweighted, and you were simply deciding on which path to take by how many nodes (locations) you passed through, Main Street would be
+				it is a worthy candidate to travel through. Graphs are typically notated as <i>G = (V, E)</i>, where <i>V</i> is the set of vertices (nodes) and <i>E</i> the set of edges.</p>
+				<p class="content">Why use weights with edges? Take for example the shortest path problem modeled with a (very well drawn) geographic map.</p>
+				<img class="example" src="images/dijkstra-example.png"></img>
+				<p class="content">You want to get from your house to the cake shop. As of right now, you have two paths you can follow: the one that starts with Main Street, or the one that starts with Fast Way. If the edges were unweighted, and you were simply deciding on which path to take by how many nodes (locations) you passed through, Main Street would be
 				the clear choice. However, Fast Way, despite passing through three times as many nodes, has an overall shorter path to the ice cream shop. A greedy algorithm may have found the less ideal path down Main Street first, and you may never have gotten your delicious ice cream cake. With a more thoughtful approach, we can find the shortest path and eat our cake too.</p>
 				<p class="content">In order to implement Dijkstra's Algorithm, we will need to model a basic graph. With object oriented programming, we can easily create classes for the nodes and edges that constitute a weighted, directed graph.</p>
 				<p class="content">The following classes model a basic graph of this nature.</p>
@@ -76,7 +78,7 @@
 	}
 }				
 </code></pre>
-				<p class="content">The member variable <i>distance</i> holds the distance (distance along the edges, not Euclidian distance) to the starting node (the original location). All nodes must be first initialized to infinity, or Dijkstra's algorithm may not provide the shortest path. In Java, this can be by instantiating the member <i>distance</i> to <i>Double.MAX_VALUE</i> or <i>Integer.MAX_VALUE</i> if you choose to use Integer distances.</p>
+				<p class="content">The member variable <i>distance</i> holds the distance (distance along the edges, not Euclidian distance) to the starting node (the original location). All nodes must be first initialized to infinity, or Dijkstra's algorithm may not provide the shortest path. In Java, this can be done by instantiating the member <i>distance</i> to <i>Double.MAX_VALUE</i> or <i>Integer.MAX_VALUE</i> if you choose to use Integer distances.</p>
 				<h3 class="subtitle">Vertex</h3>
 <pre><code>public class Edge {
 	private String name;
@@ -134,8 +136,17 @@ public class Graph {
 }
 </code></pre>
 <h3 class="subtitle">Dijkstra's Algorithm</h3>
-				
-
+<p class="content">Dijkstra's Algorithm can be broken down as follows:</p>
+<ol class="content-list">
+	<li class="list-item">Given a starting node and a graph <i>G</i> with vertex set <i>V</i> and edge set <i>E</i>, assign the starting node a tentative distance of 0 and all other nodes a distance of infinity.</li>
+	<li class="list-item">Set the initial starting node as the current node.</li>
+	<li class="list-item">Assign all nodes to the set <i>unvisited</i>.</li>
+	<li class="list-item">Consider all neighbors of the current node. Calculate the distances from the starting node to the neighboring nodes individually, comparing the new distances with their respective node's assigned distance. Assign the smaller value of the two for each of the neighboring nodes.</li>
+	<li class="list-item">After all neighboring nodes have been updated, mark the current node as <i>visited</i> and remove it from the <i>unvisited</i> set.</li>
+	<li class="list-item">Set the current node to the neighboring node with the smallest distance to the starting node.</li>
+	<li class="list-item">Repeat steps 4-6 until all unvisited nodes' distances are infinity (there is no path between the remaining nodes), or, in the case you are searching for one specific node, if the target node has been marked visited.</li>
+</ol>
+<p class="content">Through the nature of my implementation, each node's distance is updated as the algorithm runs. Its respective shortest path can then be printed with the <i>printPath(Node n)</i> method by passing in the destination node as a paramater.</p>
 
 <pre><code>import java.util.ArrayList;
 import java.util.HashSet;
@@ -156,44 +167,9 @@ public class Dijkstra {
 	
 	public Dijkstra(Graph graph) {
 		this.graph = graph;
-		resetGraph();
-	}
-	
-	/*
-	 * Clears all edges;
-	 */
-	private void resetGraph() {
 		this.edges = new ArrayList<Edge>(graph.getEdges());
 	}
-	
-	/*
-	 * Finds and prints shortest path from start to end
-	 */
-	public void run(Node start, Node end) {
-		
-		unsearched = new HashSet<Node>();
-		searched = new HashSet<Node>();
-		
-		Node current = start;		//Start the search with @param start
-		start.setDistance(0.0);
-		unsearched.add(start);
-		
-		while(!unsearched.isEmpty()) {
-			//Check if current is our target destination. If so, print out the path and end the function.
-			if(current.equals(end)) {
-				printPath(end);
-				return;
-			}
-			//Set current to the node with the least distance to start
-			current = getClosest();
-			searched.add(current);
-			unsearched.remove(current);
-			updateNeighborDistances(current);
-		}
-		//We did not find the shortest path.
-		System.out.println("Shortest path between " + start + " and " + end + " was not found.");
-	}
-	
+
 	/*
 	 * Updates all nodes with shortest distance from start. printPath(end) must be called separately.
 	 */
@@ -305,7 +281,7 @@ public class Runner {
 	private List<Node> nodes;
 	private List<Edge> edges;
 	
-	public void testExecute() {
+	public void test() {
 		nodes = new ArrayList<Node>();
 		edges = new ArrayList<Edge>();
 		for(int i = 0; i < 12; i++) {
@@ -349,7 +325,7 @@ public class Runner {
 	}
 	
 	public static void main(String[] args) {
-		new Runner().testExecute();
+		new Runner().test();
 	}
 	
 }
