@@ -40,6 +40,20 @@ body {
 		top: 10px;
 	}
 }
+#about {
+	background-color: rgba(0,0,0,0.6);
+	border-radius: 10px;
+	padding: 10px 20px;
+	margin-top: 30px;
+}
+.about-anchor {
+	padding-top: 20px;
+}
+.about-content {
+	padding: 5px;
+	margin: 0 auto;
+	font-size: 1.4em;
+}
 
 .subtitle {
 	width: 90%;
@@ -79,7 +93,16 @@ body {
 	border-radius: 100%;
 	border: 3px solid white;
 }
-
+.about-anchor {
+	text-align: center;
+	width: 50%;
+	margin: 0 auto 50px auto;
+	color: white;
+	font-family: 'Molengo', sans-serif;
+	font-size: 3em;
+	padding-bottom: 15px;
+	border-bottom: 1px solid white;
+}
 .project-anchor {
 	text-align: center;
 	width: 50%;
