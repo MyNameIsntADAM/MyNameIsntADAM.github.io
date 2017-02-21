@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Adam Hazelton's Personal Website">
+    <meta name="author" content="Adam Hazelton">
+	<link href="css/project.css" rel="stylesheet" type="text/css">
+	<link href="css/style.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Lekton|Molengo" rel="stylesheet">
+	<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="page-top">
+	<!-- Navigation -->
+	<div id="navbar">
+		<a class="logo" href="index.html">Adam Hazelton</a>
+		<ul class="menu">
+			<li class="item"><a data-scroll href="index.html">Home</a></li>
+			<li class="item"><a data-scroll href="index.html#projects">Projects</a></li>
+			<li class="item"><a data-scroll href="index.html#about">About me</a></li>
+		</ul>
+	</div>
+	
+	<!-- Page content -->
+	<div class="page-content">
+		<div class="container">
+			<h1 class="title">Implementing A* Search in Java</h1>
+			<h2 class="credits">By Adam Hazelton, 02/10/2017</h3>
+			<div class="left col-md-12">
+				<h3 class="subtitle">Heuristics and the A* Search Algorithm</h3>
+				<p class="content">The A* (pronounced 'ay-star') algorithm is a graph search algorithm very similar to Dijkstra's Algorithm. For a quick review of Dijkstra's version, and the 
+				basic graph theory needed to implement A* Search, read my other write-up on the algorithm <a href="project1.html">here.</a> The A* Search Algorithm, unlike Dijkstra's, takes into
+				account heuristics when evaluating nodes. A heuristic, in computer science and search algorithms, is a technique or method that ranks possible routes based on any relevant available
+				information. In the case of a Euclidian graph model, the heuristic, denoted <i>h(n)</i>, is the straight line distance from the starting node <i>n</i> to some other target node. The algorithm will
+				use this heuristic function to help decide which node to evaluate as it traverses the graph. The nodes are ranked by the formula</p>
+				<h3 class="formula">f(n) = g(n) + h(n)</h3>
+				<p class="content">where <i>n</i> is the current node, <i>g(n)</i> is the distance from the start node to <i>n</i>, and <i>h(n)</i> is the straight line distance from <i>n</i>
+				to the target node. In Java, this ranking of nodes generally manifests in the form of a PriorityQueue&lt;Node&gt;, where <i>f(n)</i> is used to compare and prioritize an 
+				individual node's priority in the queue. Dijkstra's Algorithm can be thought of as a special case of the A* Search where <i>h(n)</i>, the heuristic, always equals <i>0</i>, forcing
+				each node to be solely ranked by their <i>g(n)</i> value.</p>
+				<h3 class="subtitle">Why Use A* Search Over Dijkstra's Algorithm?</h3>
+				<p class="content">A* Search is used in a variety of different situations, from Pac-man AI to Google Maps routing. But what about the algorithm makes it so 'good'? The addition of the heuristic function allows A* Search to stay 'focused' and generally move closer
+				to a target node, minimizing the breadth of the algorithm's search as it traverses the graph. While Dijkstra's Algorithm keeps in mind the distance from the current
+				node to the start node, the A* Search algorithm also always keeps in mind the straight line distance to the end node. While this may not always be the optimal choice, it generally saves you from having
+				to evaluate nodes that could potentially lead you further from your target destination when compared to Dijkstra's Algorithm. Take for example the following scenario:</p>
+				<img class="example1" src="images/baddijkstra.jpg"></img>
+				<p class="content">Both algorithms start evaluation at <i>S</i>. In this case, however, Dijkstra's algorithm will traverse through <i>A, B, C, </i>AND <i>D</i> before re-evaluating
+				node <i>E</i>. Although it will print the same path as A* (unless our code tells it to terminate as soon as it has found the target node), Dijkstra's Algorithm must essentially evaluate
+				all nodes before finding the optimal path. With an A* search, however, we not only take into account the cost of the current path, but the straight line distance to the target as well (the dotted lines
+				in the image). By ranking which nodes we should evaluate based on their <i>f(n)</i> value, we essentially coax the algorithm to choose nodes that are closer to the target node. In this instance, the <i>f(n)</i> values of <i>A and E</i>
+				are 8.5 and 8, respectively. A* will evaluate the neighbors of <i>E</i> first, since its <i>f(n)</i> is smaller, and find the target node in the process. The A* Search Algorithm, in this case, will evaluate at most 2 nodes (not including the start and end nodes),
+				as opposed to Dijkstra's 5.</p>
+				<h3 class="subtitle">Pseudo Code</h3>
+				<p class="content">The A* Search Algorithm can be broken down as follows:</p>
+				<pre><code>initialize unsearched priority queue
+initialize searched list
+
+set start node's g(n) value to 0.0
+set start node's h(n) value to distance from start to end
+add start node to unsearched priority queue
+
+while unsearched is not empty
+	if the current node equals the end node print path and end
+	add current node to searched list
+	for each neighbor of the current node
+		if searched list does not contain neighbor
+			if current.g + distance from current to neighbor is less than neighbor.g
+				set current as neighbor's parent
+				set neighbor.g equal to current.g + distance from current to neighbor
+				set neighbor.h equal to distance from goal to neighbor
+				add neighbor to unsearched //Unsearched should automatically sort by f(n)
+shortest path was not found
+end</code></pre>
+				<h3 class="subtitle">Node</h3>
+				<p class="content">Although the bulk of the Node class is relatively the same as <a href="project1.html">before</a>, a few changes need to be made to accomodate the A* algorithm. In order to compare the objects for ordering within the priority queue, our Node class must implement Java's Comparable interface by using the 
+				<i>f(n)</i> function. We must add a member variable <i>heuristic</i>, which will store the straight line distance to the target node. Since we are working with a Euclidian graph, we must also add a member variable
+				<i>coord</i>, which will store the geometric point on the graph (x, y). I've also added static functions to the class that can be used to find the distance between two Nodes and print the path
+				from a node to the starting node.</p>
+				<pre><code>import java.awt.Point;
+import java.util.Stack;
+
+public class Node implements Comparable<Node> {
+	private String name;
+	private Double distance = Double.MAX_VALUE;
+	//We need Euclidian points if we are going to use A* search (Euclidian distance will serve as our heuristic)
+	private Point coord;
+	private Double heuristic;
+	private Node previous = null;
+	
+	public Node(String name) {
+		this.name = name;
+	}
+	
+	public Node(String name, int x, int y) {
+		this(name);
+		coord = new Point(x ,y);
+	}
+	
+	public String toString() {
+		return name;
+	}
+	
+	public Double getDistance() {
+		return distance;
+	}
+	
+	public Node getPrevious() {
+		return previous;
+	}
+	
+	public void setPrevious(Node n) {
+		previous = n;
+	}
+	
+	public void setDistance(Double d) {
+		distance = d;
+	}
+	
+	public boolean equals(Object o) {
+		return coord.equals(((Node)o).coord);
+	}
+	
+	public void setHeuristic(Node destination) {
+		this.heuristic = Node.distanceFrom(this, destination);
+	}
+	
+	@Override
+	public int compareTo(Node n) {
+		return Double.compare(heuristic + distance, n.heuristic + n.distance);
+	}
+	
+	/*
+	 * Static helper function used to print the path of a given destination node.
+	 */
+	public static Double distanceFrom(Node n1, Node n2) {
+		return Math.sqrt((n1.coord.x-n2.coord.x)*(n1.coord.x-n2.coord.x) + (n1.coord.y-n2.coord.y)*(n1.coord.y-n2.coord.y));
+	}
+	
+	public static void printPath(Node destination) {
+		System.out.println("Total distance traveled: " + destination.getDistance());
+		Node current = destination;
+		Stack<Node> path = new Stack<Node>();
+		path.push(destination);
+		
+		//Enqueue all path nodes to a stack (so we can easily print in reverse order)
+		while(current.getPrevious() != null) {
+			current = current.getPrevious();
+			path.push(current);
+		}
+		
+		//Print out the path in the correct order
+		int i = 0;
+		do {
+			System.out.println(++i + ": " + path.pop());
+		}
+		while(!path.isEmpty());
+	}
+	
+}
+				</pre></code>	
+				<h3 class="subtitle">Graph</h3>
+				<p class="content">The Graph class is also relatively unchanged. The getDistanceFrom() method was made static and moved from the Node class to consolidate the code and make the
+				function easily accessible.</p>
+				<pre><code>import java.util.ArrayList;
+import java.util.List;
+
+public class Graph {
+	private List<Node> nodes;
+	private List<Edge> edges;
+	
+	public Graph(List<Node> nodes, List<Edge> edges) {
+		this.nodes = nodes;
+		this.edges = edges;
+	}
+	
+	public List<Edge> getEdges() {
+		return edges;
+	}
+	
+	public List<Node> getNodes() {
+		return nodes;
+	}
+	
+	public static ArrayList<Node> getNeighbors(List<Edge> edges,Node n) {
+		ArrayList<Node> neighbors = new ArrayList<Node>();
+		for(Edge edge : edges) {
+			if(edge.getStart().equals(n)) {
+				neighbors.add(edge.getEnd());
+			}
+		}
+		return neighbors;
+	}
+	
+	public static Double getDistanceFrom(List<Edge> edges, Node start, Node end) {
+		for(Edge e : edges) {
+			if(e.getStart().equals(start) && e.getEnd().equals(end)) {
+				return e.getLength();
+			}
+		}
+		return null;
+	}
+	
+}</code></pre>
+				<h3 class="subtitle">A* Search Algorithm</h3>
+				<p class="content">The following implementation of A* search will terminate once it has found the target node. Because the heuristic is admissible (we never overestimate the distance), the
+				algorithm is guaranteed to always find the optimal and shortest route if it exists.</p>
+				<pre><code>import java.util.HashSet;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+
+public class Astar {
+	Graph graph;
+	private List<Edge> edges;
+	private Set<Node> searched;
+	private Queue<Node> unsearched;
+	
+	public Astar(Graph graph) {
+		this.graph = graph;
+		edges = graph.getEdges();
+	}
+	
+	/*
+	 * Finds and prints shortest path from start to end using A* search
+	 */
+	public void run(Node start, Node end) {
+		//Initialize empty set and empty PriorityQueue
+		searched = new HashSet<Node>();
+		unsearched = new PriorityQueue<Node>();
+	
+		//Set the current node to @param start
+		Node current = start;
+		//Set start node's heuristic values (g(x) and h(x))
+		start.setDistance(0.0);
+		start.setHeuristic(end);
+		//Add @param start to the queue
+		unsearched.add(start);
+		
+		while(!unsearched.isEmpty()) {
+			//Pop the PriorityQueue and set current to the top element;
+			current = unsearched.poll();
+			//If the current node is our target, print the path and end
+			System.out.println(current);
+			if(current.equals(end)) {
+				Node.printPath(end);
+				return;
+			}
+			//Move current node to the searched list.
+			searched.add(current);
+			updateNeighbor(current, end);
+		}
+		//We did not find the shortest path.
+		System.out.println("Shortest path between " + start + " and " + end + " was not found.");
+	}
+	
+	/*
+	 * @param curr node whose neighbors are to be checked/updated.
+	 * @param destination node which heuristics will be calculated from (AKA distance from @param destination)
+	 */
+	public void updateNeighbor(Node curr, Node destination) {
+		List<Node> neighbors = Graph.getNeighbors(edges, curr);
+		//distance is the current node's distance to start
+		Double distance = curr.getDistance();
+		for(Node neighbor : neighbors) {
+			//temp is the distance from current node to a neighbor
+			Double temp = Graph.getDistanceFrom(edges, curr, neighbor);
+			//If searched already contains neighbor, no need to double check. Continue in loop.
+			if(!searched.contains(neighbor)) {
+				if(distance + temp < neighbor.getDistance()) {
+					//Shorter path has been found. Update neighboring node.
+					neighbor.setPrevious(curr);
+					neighbor.setDistance(distance + temp);
+					neighbor.setHeuristic(destination);
+					//Allow neighbor to be searched through by adding it to the unsearched queue.
+					unsearched.add(neighbor);
+				}
+			}
+		}
+	}
+	
+}</pre></code>
+				<h3 class="subtitle">Testing the Algorithm</h3>
+				<p class="content">Below is the main class where you can run and test the algorithm. I also provided parser functions that will take a text document and add the Edges contained
+				inside, as well as the connected Nodes if they haven't already been added. The format of the file must be as follows:</p>
+				<pre><code>a_X;a_Y;b_X;b_Y
+c_X;c_Y;d_X;d_Y
+e_X;e_Y		//All nodes with no outgoing edges must have their coordinates listed on a separate line.
+...</code></pre>
+				<p class="content">where the first two integers of each line, separated by a <i>;</i> are the <i>(x, y)</i> coordinates for the start Node of an Edge, and the last two integers 
+				of each line are the coordinates to the end Node for that Edge. I also included a parser for a file full of city street names in case you wanted to print out the Edge's traversed.</p>
+				<pre><code>import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class Runner {
+	
+	public static final int startX = 1, startY = 1, 
+							endX = 17, endY = 9;
+	
+	private List<Node> nodes;
+	private List<Edge> edges;
+	
+	private List<String> streetNames;
+	
+	public void testExecute() {
+		nodes = new ArrayList<Node>();
+		edges = new ArrayList<Edge>();
+		streetNames = new ArrayList<String>();
+		
+		getStreetNames("src/res/Street_Names.txt");
+		getEdges("src/res/edges.txt");
+		
+        Astar a = new Astar(new Graph(nodes, edges));
+        Node start = getNode(startX, startY);
+        Node end = getNode(endX, endY);
+        
+        //Calculate shortest path to given node for all nodes.
+        a.run(start, end);
+	}
+
+	/*
+	 * @param name the name of the edge
+	 * @param start the index of the edge's first node
+	 * @param end the index of the edge's connecting node
+	 */
+	private Edge addEdge(String name, Node start, Node end) {
+		Edge edge = new Edge(name, start, end, Node.distanceFrom(start, end));
+		edges.add(edge);
+		return edge;
+	}
+	
+	private void getEdges(String path) {
+		FileReader file;
+		try {
+			file = new FileReader(path);
+			BufferedReader reader = new BufferedReader(file);
+			String line = null;
+			//Parse text file to create Edges
+			Random r = new Random();
+			while((line = reader.readLine()) != null) {
+				String[] arr = line.split(";");
+				String name = streetNames.get(r.nextInt(streetNames.size()));
+				//This is an Edge
+				if(arr.length > 2) {
+					Node start = new Node("" + Integer.parseInt(arr[0]) + ", " + Integer.parseInt(arr[1]), Integer.parseInt(arr[0]), Integer.parseInt(arr[1]));
+					Node end = new Node("" + Integer.parseInt(arr[2]) + ", " + Integer.parseInt(arr[3]), Integer.parseInt(arr[2]), Integer.parseInt(arr[3]));
+					//Check if nodes already contains the start or end node. If so, set start and end equal to the found node.
+					boolean startAdded = false;
+					boolean endAdded = false;
+					for(Node n : nodes) {
+						if(start.equals(n)) {
+							start = n;
+							startAdded = true;
+						}
+						if(end.equals(n)) {
+							end = n;
+							endAdded = true;
+						}
+					}
+					if(!startAdded) nodes.add(start);
+					if(!endAdded) nodes.add(end);
+					addEdge(name, start, end);
+				}
+				//This is a Node with no outgoing edges
+				else {
+					Node node = new Node("" + Integer.parseInt(arr[0]) + ", " + Integer.parseInt(arr[1]), Integer.parseInt(arr[0]), Integer.parseInt(arr[1]));
+					nodes.add(node);
+				}
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private Node getNode(int x, int y) {
+		Node node = new Node("", x, y);
+		for(Node n : nodes) {
+			if(node.equals(n)) {
+				return n;
+			}
+		}
+		return null;
+	}
+	
+	private void getStreetNames(String path) {
+		try {
+			FileReader file = new FileReader(path);
+			BufferedReader reader = new BufferedReader(file);
+			String line = null;
+			while((line = reader.readLine()) != null) {
+				streetNames.add(line.split(",")[0]);
+			}
+			file.close();
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args) {
+		new Runner().testExecute();
+	}
+	
+}</code></pre> 			
+			</div>
+		</div>
+	</div>
+	
+	<div class="footer">
+            <div class="row">
+                <div class="col-md-5 col-xs-12">
+                    <span class="copyright">Copyright &copy Adam Hazelton 2017</span>
+                </div>
+                <div class="col-md-2 col-xs-12">
+                    <ul class="list-inline social-buttons">
+                        <li><a href="https://mobile.twitter.com/adam_hazelton/" target="_blank"><i class="fa fa-twitter"></i></a>
+                        </li>
+                        <li><a href="https://www.instagram.com/adamissuperdumb/" target="_blank"><i class="fa fa-instagram"></i></a>
+                        </li>
+                        <li><a href="https://www.linkedin.com/in/adam-hazelton-93a7a5125" target="_blank"><i class="fa fa-linkedin"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-5 col-xs-12">
+                    <span class="copyright">If you want to collaborate on any projects, let me know at <a style="color: white;" href="tel:16618084081">1-661-808-4081</a>. Please no soliciting.</span>
+                </div>
+            </div>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script src="js/smooth-scroll.js"></script>
+	<script src="js/darken.js"></script>
+	<script>
+		smoothScroll.init();
+	</script>
+</body>

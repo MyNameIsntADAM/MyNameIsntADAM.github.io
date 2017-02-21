@@ -1,0 +1,4 @@
+Made print function static
+Made getDistanceFrom function (and made it static)
+made a bunch of shit static
+Removed getClosest method (it automatically grabs the one with the smallest f(x) = g(x) + h(x) with a priorityQueue)
