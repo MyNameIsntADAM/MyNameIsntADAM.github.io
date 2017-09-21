@@ -1,0 +1,29 @@
+.font-xl {
+	font-size: 5em;
+}
+
+.font-m-l {
+	font-size: 4em;
+}
+
+.font-l {
+	font-size: 3em;
+}
+
+.font-m {
+	font-size: 2em;
+}
+
+.font-s {
+	font-size: 1em;
+}
+
+.outline {
+	color: black;
+   -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+   -webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: black;
+}
+
+
+

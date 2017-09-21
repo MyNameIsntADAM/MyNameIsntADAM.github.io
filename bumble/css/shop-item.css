@@ -1,0 +1,51 @@
+body {
+    padding-top: 150px;
+}
+
+.thumbnail img {
+    width: 100%;
+}
+
+@media (max-width: 768px) {		
+.disappear {
+	visibility: hidden;
+}
+.lead {
+	visibility: hidden;
+}
+}
+
+.ratings {
+    padding-right: 10px;
+    padding-left: 10px;
+    color: #d17581;
+}
+
+.thumbnail {
+    padding: 0;
+}
+
+.thumbnail .caption-full {
+    padding: 9px;
+    color: #333;
+}
+
+footer {
+    margin: 50px 0 0 0;
+}
+@media (max-width: 768px) {	
+	.vei-btn {
+		background-color: #7AAC80; 
+		border-color: #7AAC80;
+		margin-top: 5px;
+	}
+}
+.vei-btn {
+	background-color: #7AAC80; 
+	border-color: #7AAC80;
+}
+
+.vei-btn:hover {
+	background-color: #5AAC80;
+	border-color: #5AAC80;
+}

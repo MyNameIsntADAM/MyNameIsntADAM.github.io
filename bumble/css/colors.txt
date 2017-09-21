@@ -1,0 +1,4 @@
+green: #7ABC80
+PINK: #F79DB3
+yellow: #FFEB7E
+gray: #9BA6A5
